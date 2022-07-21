@@ -17,7 +17,9 @@ public class Game extends JFrame{
     private String smileIcon = "img/smile.png";
     //  private Timer timer;
 
-    private int rows, columns, numberOfMines;
+    private int rows, columns, numberOfMines, timer;
+
+    public static int mineNum, lives = 2;
 
     private String dif;
 
@@ -25,7 +27,7 @@ public class Game extends JFrame{
 
     private JPanel mainPanel, GPanel, infoPanel;
 
-    private JLabel timerLabel, mineNum, lives;
+    private JLabel timerLabel, mineNumLabel, livesLabel;
 
     private JButton restart;
 
@@ -112,13 +114,17 @@ public class Game extends JFrame{
                 //  new Game(rows, columns, numberOfMines);
             }
         });
-        mineNum = new JLabel(String.valueOf(numberOfMines));
-        lives = new JLabel("2");
+
+        mineNum = numberOfMines;
+
+        mineNumLabel = new JLabel(String.valueOf(mineNum));
+
+        livesLabel = new JLabel(String.valueOf(lives));
 
         infoPanel.add(timerLabel);
         infoPanel.add(restart);
-        infoPanel.add(mineNum);
-        infoPanel.add(lives);
+        infoPanel.add(mineNumLabel);
+        infoPanel.add(livesLabel);
     }
 
     private void newGame(){
@@ -142,57 +148,50 @@ public class Game extends JFrame{
         this.columns = columns;
     }
 
-    private boolean rightCellsMarked(){
-        int f = 0;
-        for(int i = 0; i<rows; i++){
-            for(int j = 0; j<columns; j++){
-                if (cell[i][j].getFlagged()) {
-                    f++;
-                }
-            }
-        }
+    // private boolean rightCellsMarked(){
+    //     int f = 0;
+    //     for(int i = 0; i<rows; i++){
+    //         for(int j = 0; j<columns; j++){
+    //             if (cell[i][j].getFlagged()) {
+    //                 f++;
+    //             }
+    //         }
+    //     }
 
-        if(numberOfMines == f)
-            return true;
-        else
-            return false;
-    }
+    //     if(numberOfMines == f)
+    //         return true;
+    //     else
+    //         return false;
+    // }
 
-    private boolean rightCellsOpened(){
-        int f = 0;
-        for(int i = 0; i<rows; i++){
-            for(int j = 0; j<columns; j++){
-                System.out.println(cell[i][j].getContent());
-                if (!cell[i][j].getFlagged() && cell[i][j].getContent() != "mined") {
-                    f++;
-                    System.out.println(f);
-                }
-            }
-        }
-        System.out.println(columns + " * " + rows + " == " + f + " + " + numberOfMines);
-        System.out.println((columns * rows) == f + numberOfMines);
-        if((columns * rows) == f + numberOfMines)
-            return true;
-        else return false;
-    }
+    // private boolean rightCellsOpened(){
+    //     int f = 0;
+    //     for(int i = 0; i<rows; i++){
+    //         for(int j = 0; j<columns; j++){
+    //             System.out.println(cell[i][j].getContent());
+    //             if (!cell[i][j].getFlagged() && cell[i][j].getContent() != "mined") {
+    //                 f++;
+    //                 System.out.println(f);
+    //             }
+    //         }
+    //     }
+    //     System.out.println(columns + " * " + rows + " == " + f + " + " + numberOfMines);
+    //     System.out.println((columns * rows) == f + numberOfMines);
+    //     if((columns * rows) == f + numberOfMines)
+    //         return true;
+    //     else return false;
+    // }
 
-    private void win(){
-        new Winner().setVisible(true);
-    }
+    // private void win(){
+    //     new Winner().setVisible(true);
+    // }
 
-    private void lose(){
-        new Loser().setVisible(true);
-    }
+    // private void lose(){
+    //     new Loser().setVisible(true);
+    // }
 
-    public void gameOver(){
-        if(rightCellsMarked() || rightCellsOpened()) {
-            win();
-            System.out.println("you win");
-        }
-        else if(parseInt(lives.getText())<1) {
-            lose();
-            System.out.println("you lose");
-        }
+    public static void gameOver(){
+        System.out.println("You loose!");
     }
 
     private void setDif(){
@@ -220,9 +219,21 @@ public class Game extends JFrame{
         for(int i = 0; i < rows; i++){
             for(int j = 0; j < columns; j++){
                 cell[i][j] = new Cell();
+                cell[i][j].addActionListener(new ActionListener(){
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        cellAction();
+                    }
+                });
+
                 GPanel.add(cell[i][j]);
             }
         }
+    }
+
+    private void cellAction(){
+        System.out.println("game: cellAction");
+        mineNumLabel.setText(String.valueOf(mineNum));
     }
 
     private void setMinesPlaces(){

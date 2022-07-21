@@ -7,11 +7,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class Cell extends JButton implements ActionListener{
-    private boolean flagged;
-    private String content = "0";
+    private boolean flagged, open;
+    private String content;
 
     public Cell(){
         this.flagged = false;
+        this.open = false;
+        this.content = "0";
         imageSetter("closed");
         addActionListener(this);
         addMouseListener(new MouseAdapter() {
@@ -26,12 +28,14 @@ public class Cell extends JButton implements ActionListener{
     }
 
     private void rightMouse(){
-        this.flagged = !flagged;
-        
-        if(this.flagged == true)
-            imageSetter("flagged");
-        else
-            imageSetter("closed");
+        if(this.open == false){
+            this.flagged = !flagged;
+            
+            if(this.flagged == true)
+                imageSetter("flagged");
+            else
+                imageSetter("closed");
+        }
     }
 
     public void imageSetter(String img){
@@ -47,16 +51,28 @@ public class Cell extends JButton implements ActionListener{
     }
 
     public boolean getFlagged() {
-        return flagged;
+        return this.flagged;
+    }
+
+    
+    public void cellOpen(){
+        imageSetter(this.content);
+        //  setEnabled(false);
+        this.open = true;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        cellOpen();
-    }
-
-    public void cellOpen(){
-        imageSetter(this.content);
-//        setEnabled(false);
+        System.out.println("this.open" + this.open);
+        if(this.open == false){
+            cellOpen();
+            Game.mineNum--;
+            if(Game.lives > 0){
+                System.out.println(Game.lives);
+                Game.lives--;
+            }
+            else
+                Game.gameOver();
+        }
     }
 }
