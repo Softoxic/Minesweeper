@@ -15,13 +15,13 @@ public class Game extends JFrame{
     private JMenuBar mb;
 
     private String smileIcon = "img/smile.png";
-//    private Timer timer;
+    //  private Timer timer;
 
     private int rows, columns, numberOfMines;
 
     private String dif;
 
-    private Cell[][] cells;
+    private Cell[][] cell;
 
     private JPanel mainPanel, GPanel, infoPanel;
 
@@ -30,7 +30,7 @@ public class Game extends JFrame{
     private JButton restart;
 
     public Game(String dif){
-//        timer = new Timer();
+    //  timer = new Timer();
         this.dif = dif;
         
         setTitle(dif);
@@ -44,56 +44,6 @@ public class Game extends JFrame{
         cellsCreatorAdd();
 
         indexContent();
-    }
-
-    private void indexContent(){
-        Random rn = new Random();
-        int r = rows + 1;
-        int c = columns + 1;
-        int rr;
-        int rc;
-        int i = 0;
-        while(i<numberOfMines) {
-            rr = rn.nextInt(r-1);
-            rc = rn.nextInt(c-1);
-            if(cells[rr][rc].getIsMine() == false) {
-                cells[rr][rc].setIsMine(true);
-                cells[rr][rc].setContent("mined");
-                i++;
-            }
-        }
-        int ak;
-        for(int a = 0; a<rows; a++){
-            for(int k = 0; k<columns; k++){
-                ak = 0;
-                if(cells[a][k].getIsMine() == false) {
-                    for(int s = a-1; s<a+2; s++){
-                        for(int h = k-1; h<k+2; h++){
-                            if(a==0 && s==-1){
-                                s=0;
-                            }
-                            if(k==0 && h==-1){
-                                h=0;
-                            }
-                            if(s>rows-1)
-                                continue;
-                            if(h>columns-1)
-                                continue;
-                            if(cells[s][h].getIsMine()){
-                                ak++;
-                            }
-                        }
-                    }
-                    cells[a][k].setContent((Integer.toString(ak)));
-//                    cells[a][k].setIcon(new ImageIcon(getClass().getResource("img/" + ak + ".png")));
-                }
-            }
-        }
-    }
-
-    private void visibleMenu(){
-        setVisible(false);
-        new Menu().setVisible(true);
     }
 
     private void Components(){
@@ -129,6 +79,16 @@ public class Game extends JFrame{
         setResizable(false);
     }
 
+    private void indexContent(){
+        setMinesPlaces();
+        setNonMinedCellContent();
+    }
+
+    private void visibleMenu(){
+        setVisible(false);
+        new Menu().setVisible(true);
+    }
+
     private void help(){
         new Help().setVisible(true);
     }
@@ -149,7 +109,7 @@ public class Game extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 newGame();
-//                new Game(rows, columns, numberOfMines);
+                //  new Game(rows, columns, numberOfMines);
             }
         });
         mineNum = new JLabel(String.valueOf(numberOfMines));
@@ -186,11 +146,12 @@ public class Game extends JFrame{
         int f = 0;
         for(int i = 0; i<rows; i++){
             for(int j = 0; j<columns; j++){
-                if (cells[i][j].isFlagged()) {
+                if (cell[i][j].getFlagged()) {
                     f++;
                 }
             }
         }
+
         if(numberOfMines == f)
             return true;
         else
@@ -201,8 +162,8 @@ public class Game extends JFrame{
         int f = 0;
         for(int i = 0; i<rows; i++){
             for(int j = 0; j<columns; j++){
-                System.out.println(cells[i][j].getContent());
-                if (!cells[i][j].isFlagged() && !cells[i][j].getIsMine()) {
+                System.out.println(cell[i][j].getContent());
+                if (!cell[i][j].getFlagged() && cell[i][j].getContent() != "mined") {
                     f++;
                     System.out.println(f);
                 }
@@ -255,12 +216,84 @@ public class Game extends JFrame{
     }
 
     private void cellsCreatorAdd(){
-        cells = new Cell[rows][columns];
+        cell = new Cell[rows][columns];
         for(int i = 0; i < rows; i++){
             for(int j = 0; j < columns; j++){
-                cells[i][j] = new Cell();
-                GPanel.add(cells[i][j]);
+                cell[i][j] = new Cell();
+                GPanel.add(cell[i][j]);
             }
+        }
+    }
+
+    private void setMinesPlaces(){
+        
+        Random rn = new Random();
+        
+        //  random row, random column
+        int rr, rc;
+
+        int i = 0;
+
+        while(i < numberOfMines) {
+            rr = rn.nextInt(rows);
+            rc = rn.nextInt(columns);
+
+            //  If content not mined then set content as mined
+            if(cell[rr][rc].getContent() != "mined") {
+                cell[rr][rc].setContent("mined");
+                i++;
+            }
+        }
+    }
+
+    private void setNonMinedCellContent(){
+
+        //  Double for (rows, columns)
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                //  if cell is mined
+                if(cell[i][j].getContent() != "mined") {
+
+                    //  Searching for Mines around the cell with mineSearcher 
+                    //  Adding it as cell[i][j].setContent()
+                    cell[i][j].setContent((Integer.toString(mineSearcher(i, j))));
+                    //  cells[a][k].setIcon(new ImageIcon(getClass().getResource("img/" + ak + ".png")));
+                }
+            }
+        }
+        // printskonaki();
+    }
+
+    private int mineSearcher(int i, int j){
+        int mineCount = 0;  //  Var counts Mines around
+
+        for(int r = i - 1; r < i + 2; r++){
+            for(int c = j - 1; c < j + 2; c++){
+                if(i == 0 && r == -1){
+                    r = 0;
+                }
+
+                if(j == 0 && c == -1){
+                    c = 0;
+                }
+
+                if((r > rows-1) || (c > columns-1))
+                    continue;
+
+                if(cell[r][c].getContent() == "mined"){
+                    mineCount++;
+                }
+            }
+        }
+        return mineCount;
+    }
+
+    private void printskonaki(){
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                System.out.print(cell[i][j].getContent() + "\t ");
+            }
+            System.out.println();
         }
     }
 }

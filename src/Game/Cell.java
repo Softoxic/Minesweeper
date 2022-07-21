@@ -7,12 +7,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class Cell extends JButton implements ActionListener{
-    private boolean isMine, flagged;
-    private String content;
+    private boolean flagged;
+    private String content = "0";
 
     public Cell(){
         this.flagged = false;
-        this.isMine = false;
         imageSetter("closed");
         addActionListener(this);
         addMouseListener(new MouseAdapter() {
@@ -28,6 +27,7 @@ public class Cell extends JButton implements ActionListener{
 
     private void rightMouse(){
         this.flagged = !flagged;
+        
         if(this.flagged == true)
             imageSetter("flagged");
         else
@@ -38,36 +38,16 @@ public class Cell extends JButton implements ActionListener{
         setIcon(new ImageIcon(getClass().getResource("img/" + img + ".png")));
     }
 
-    public boolean getIsMine() {
-        return isMine;
-    }
-
-    public void setIsMine(boolean mine) {
-        this.isMine = mine;
-    }
-
     public String getContent() {
-        return content;
+        return this.content;
     }
 
     public void setContent(String content) {
         this.content = content;
     }
 
-    public boolean isMine() {
-        return isMine;
-    }
-
-    public void setMine(boolean mine) {
-        isMine = mine;
-    }
-
-    public boolean isFlagged() {
+    public boolean getFlagged() {
         return flagged;
-    }
-
-    public void setFlagged(boolean flagged) {
-        this.flagged = flagged;
     }
 
     @Override
