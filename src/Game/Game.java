@@ -262,7 +262,7 @@ public class Game extends JFrame{
         //  Double for (rows, columns)
         for(int i = 0; i < rows; i++){
             for(int j = 0; j < columns; j++){
-                //  if cell is mined
+                //  if cell is not mined
                 if(cell[i][j].getContent() != "mined") {
 
                     //  Searching for Mines around the cell with mineSearcher 
