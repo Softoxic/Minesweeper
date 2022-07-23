@@ -2,23 +2,18 @@ package Game;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class Menu extends JFrame {
     private JLabel difficulties;
     private JPanel mainPanel;
     private JButton beginner, intermediate, expert;
-    
-    public Menu(){
-        Components();
-    }
 
-    private void Components(){
+    public Menu(){
         creatorMethod();
         addMethod();
 
-//        setMinimumSize(new Dimension(600,750));
+        //  setMinimumSize(new Dimension(600,750));
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pack();
@@ -35,19 +30,35 @@ public class Menu extends JFrame {
         buttonsCreator();
     }
 
-    private void expertButton(){
+    private void setVisibilities(){
+        //  Setting the visibility of Menu as false and Game as true
+        Game.getGame().setVisible(true);
         setVisible(false);
-        new Game("expert").setVisible(true);
+    }
+
+    private void expertButton(){
+        Game.setGame(null);
+        Game.getGame();
+        Game.setGame(new Game("expert"));
+
+        setVisibilities();
     }
 
     private void intermediateButton(){
-        setVisible(false);
-        new Game("intermediate").setVisible(true);
+        Game.setGame(null);
+        Game.getGame();
+        Game.setGame(new Game("intermediate"));
+        
+        setVisibilities();
     }
 
     private void beginnerButton(){
-        setVisible(false);
-        new Game("beginner").setVisible(true);
+        Game.setGame(null);
+        Game.getGame();
+        Game.setGame(new Game("beginner"));
+        
+        setVisibilities();
+        // System.out.println("theGame: " + Game.getGame());
     }
 
     private void addMethod(){
@@ -83,4 +94,5 @@ public class Menu extends JFrame {
             }
         });
     }
+
 }

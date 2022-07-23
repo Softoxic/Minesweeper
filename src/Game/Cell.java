@@ -55,24 +55,22 @@ public class Cell extends JButton implements ActionListener{
     }
 
     
-    public void cellOpen(){
+    public void cellAction(){
+        this.open = !this.open;
+        // setEnabled(false);
         imageSetter(this.content);
-        //  setEnabled(false);
-        this.open = true;
+
+        if(this.content == "mined"){
+            Game.getGame().setCurMineNum(Game.getGame().getCurMineNum() - 1);
+            System.out.println("Number of available Mines ->" + Game.getGame().getCurMineNum());
+        }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("this.open" + this.open);
-        if(this.open == false){
-            cellOpen();
-            Game.mineNum--;
-            if(Game.lives > 0){
-                System.out.println(Game.lives);
-                Game.lives--;
-            }
-            else
-                Game.gameOver();
+        if(!this.open){
+            //  if it's closed set it as opened after click
+            cellAction();
         }
     }
 }

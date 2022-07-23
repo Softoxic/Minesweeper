@@ -2,13 +2,11 @@ package Game;
 
 import javax.swing.*;
 
-import Game.Player.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
-import static java.lang.Integer.parseInt;
+
 //import java.util.Timer;
 
 public class Game extends JFrame{
@@ -17,9 +15,12 @@ public class Game extends JFrame{
     private String smileIcon = "img/smile.png";
     //  private Timer timer;
 
-    private int rows, columns, numberOfMines, timer;
+    private int rows, columns, numberOfMines;//timer;
 
-    public static int mineNum, lives = 2;
+    //  allMyStatics
+    private static Game game;
+
+    private static int curMineNum = 0, curLives = 2;
 
     private String dif;
 
@@ -115,11 +116,11 @@ public class Game extends JFrame{
             }
         });
 
-        mineNum = numberOfMines;
+        Game.curMineNum = numberOfMines;
 
-        mineNumLabel = new JLabel(String.valueOf(mineNum));
+        mineNumLabel = new JLabel(String.valueOf(Game.curMineNum));
 
-        livesLabel = new JLabel(String.valueOf(lives));
+        livesLabel = new JLabel(String.valueOf(Game.curLives));
 
         infoPanel.add(timerLabel);
         infoPanel.add(restart);
@@ -219,6 +220,8 @@ public class Game extends JFrame{
         for(int i = 0; i < rows; i++){
             for(int j = 0; j < columns; j++){
                 cell[i][j] = new Cell();
+                // System.out.println(Game.getGame());
+                // System.out.println("Number of available Mines ->" + Menu.getTheGame().curMineNum);
                 cell[i][j].addActionListener(new ActionListener(){
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -232,8 +235,8 @@ public class Game extends JFrame{
     }
 
     private void cellAction(){
-        System.out.println("game: cellAction");
-        mineNumLabel.setText(String.valueOf(mineNum));
+        if(Game.curMineNum > 0)
+            mineNumLabel.setText(String.valueOf(Game.curMineNum - 1));
     }
 
     private void setMinesPlaces(){
@@ -299,12 +302,54 @@ public class Game extends JFrame{
         return mineCount;
     }
 
-    private void printskonaki(){
-        for(int i = 0; i < rows; i++){
-            for(int j = 0; j < columns; j++){
-                System.out.print(cell[i][j].getContent() + "\t ");
-            }
-            System.out.println();
-        }
+    // private void printskonaki(){
+    //     for(int i = 0; i < rows; i++){
+    //         for(int j = 0; j < columns; j++){
+    //             System.out.print(cell[i][j].getContent() + "\t ");
+    //         }
+    //         System.out.println();
+    //     }
+    // }
+
+    /*
+     * private int rows, columns, numberOfMines, timer;
+
+    private int mineNum, lives = 2;
+
+    private String dif;
+
+    private Cell[][] cell;
+
+    private JPanel mainPanel, GPanel, infoPanel;
+
+    private JLabel timerLabel, mineNumLabel, livesLabel;
+
+    private JButton restart;
+     */
+
+    // static Getters/Setters
+
+    public static int getCurLives() {
+        return curLives;
+    }
+
+    public static void setCurLives(int curLives) {
+        Game.curLives = curLives;
+    }
+
+    public static int getCurMineNum() {
+        return curMineNum;
+    }
+
+    public static void setCurMineNum(int curMineNum) {
+        Game.curMineNum = curMineNum;
+    }
+
+    public static Game getGame(){
+        return Game.game;
+    }
+
+    public static void setGame(Game game){
+        Game.game = game;
     }
 }
