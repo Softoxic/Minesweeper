@@ -1,6 +1,9 @@
 package Game;
 
 import javax.swing.*;
+
+import Game.Player.Loser;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -58,19 +61,48 @@ public class Cell extends JButton implements ActionListener{
     public void cellAction(){
         this.open = !this.open;
         // setEnabled(false);
+
+        //  showing the content photo of cell
         imageSetter(this.content);
 
+        //  if mined
         if(this.content == "mined"){
-            Game.getGame().setCurMineNum(Game.getGame().getCurMineNum() - 1);
-            System.out.println("Number of available Mines ->" + Game.getGame().getCurMineNum());
+            Game.setCurMineNum(Game.getCurMineNum() - 1);   //  mineNum--
+
+            //  updating label of mineNum
+            Game.getMineNumLabel().setText("" + Game.getCurMineNum());
+
+            //  if lives == 0
+            if(Game.getCurLives() == 0)
+                looserFunc();
+
+            //  if lives > 0
+            if(Game.getCurLives() > 0){
+                //  lives--
+                Game.setCurLives(Game.getCurLives() - 1);
+                //  updating label of lives
+                Game.getLivesLabel().setText("" + Game.getCurLives());
+            }
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(!this.open){
+        if(!this.open && !this.flagged){
             //  if it's closed set it as opened after click
             cellAction();
         }
+    }
+
+    private void looserFunc(){
+        if(Game.getCurLives() == 0){
+            for(int i = 0; i < Game.getGame().getRows(); i++)
+                for(int j = 0; j < Game.getGame().getColumns(); j++){
+                    if(Game.getCell()[i][j].getContent() == "mined")
+                        Game.getCell()[i][j].imageSetter(Game.getCell()[i][j].getContent());
+                        Game.getCell()[i][j].setEnabled(false);
+                }
+        }
+        new Loser().setVisible(true);
     }
 }

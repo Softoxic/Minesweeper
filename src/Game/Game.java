@@ -24,11 +24,13 @@ public class Game extends JFrame{
 
     private String dif;
 
-    private Cell[][] cell;
+    private static Cell[][] cell;
 
     private JPanel mainPanel, GPanel, infoPanel;
 
-    private JLabel timerLabel, mineNumLabel, livesLabel;
+    private JLabel timerLabel;
+
+    private static JLabel mineNumLabel, livesLabel;
 
     private JButton restart;
 
@@ -128,27 +130,6 @@ public class Game extends JFrame{
         infoPanel.add(livesLabel);
     }
 
-    private void newGame(){
-        setVisible(false);
-        new Game(this.dif).setVisible(true);
-    }
-
-    public int getRows() {
-        return rows;
-    }
-
-    public void setRows(int rows) {
-        this.rows = rows;
-    }
-
-    public int getColumns() {
-        return columns;
-    }
-
-    public void setColumns(int columns) {
-        this.columns = columns;
-    }
-
     // private boolean rightCellsMarked(){
     //     int f = 0;
     //     for(int i = 0; i<rows; i++){
@@ -191,7 +172,7 @@ public class Game extends JFrame{
     //     new Loser().setVisible(true);
     // }
 
-    public static void gameOver(){
+    public void gameOver(){
         System.out.println("You loose!");
     }
 
@@ -222,21 +203,16 @@ public class Game extends JFrame{
                 cell[i][j] = new Cell();
                 // System.out.println(Game.getGame());
                 // System.out.println("Number of available Mines ->" + Menu.getTheGame().curMineNum);
-                cell[i][j].addActionListener(new ActionListener(){
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        cellAction();
-                    }
-                });
+                // cell[i][j].addActionListener(new ActionListener(){
+                //     @Override
+                //     public void actionPerformed(ActionEvent e) {
+                //         cellAction();
+                //     }
+                // });
 
                 GPanel.add(cell[i][j]);
             }
         }
-    }
-
-    private void cellAction(){
-        if(Game.curMineNum > 0)
-            mineNumLabel.setText(String.valueOf(Game.curMineNum - 1));
     }
 
     private void setMinesPlaces(){
@@ -255,9 +231,21 @@ public class Game extends JFrame{
             //  If content not mined then set content as mined
             if(cell[rr][rc].getContent() != "mined") {
                 cell[rr][rc].setContent("mined");
+                
+                cell[rr][rc].addActionListener(new ActionListener(){
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        looserFunc();
+                    }
+                });
+
                 i++;
             }
         }
+    }
+
+    private void looserFunc(){
+        
     }
 
     private void setNonMinedCellContent(){
@@ -311,23 +299,28 @@ public class Game extends JFrame{
     //     }
     // }
 
-    /*
-     * private int rows, columns, numberOfMines, timer;
-
-    private int mineNum, lives = 2;
-
-    private String dif;
-
-    private Cell[][] cell;
-
-    private JPanel mainPanel, GPanel, infoPanel;
-
-    private JLabel timerLabel, mineNumLabel, livesLabel;
-
-    private JButton restart;
-     */
-
     // static Getters/Setters
+
+    private void newGame(){
+        setVisible(false);
+        new Game(this.dif).setVisible(true);
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    public void setRows(int rows) {
+        this.rows = rows;
+    }
+
+    public int getColumns() {
+        return columns;
+    }
+
+    public void setColumns(int columns) {
+        this.columns = columns;
+    }
 
     public static int getCurLives() {
         return curLives;
@@ -351,5 +344,17 @@ public class Game extends JFrame{
 
     public static void setGame(Game game){
         Game.game = game;
+    }
+
+    public static JLabel getMineNumLabel() {
+        return Game.mineNumLabel;
+    }
+
+    public static JLabel getLivesLabel() {
+        return Game.livesLabel;
+    }
+
+    public static Cell[][] getCell() {
+        return Game.cell;
     }
 }
